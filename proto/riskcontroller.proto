@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "./protobuf/riskcontroller";
+option go_package = "../protobuf/riskcontroller";
 package proto;
 import "proto/common.proto";
 

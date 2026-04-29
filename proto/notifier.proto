@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "./protobuf/notifier";
+option go_package = "../protobuf/notifier";
 package proto;
 import "proto/common.proto";
 

@@ -1,6 +1,6 @@
 syntax = "proto3";
 package proto;
-option go_package = "./protobuf/walletsign";
+option go_package = "../protobuf/walletsign";
 import "proto/common.proto";
 
 // 查询链签名方法请求

@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "./protobuf/walletapi";
+option go_package = "../protobuf/walletapi";
 package proto;
 import "proto/common.proto";
 

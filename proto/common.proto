@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package proto;
 
-option go_package = "./protobuf/common";
+option go_package = "../protobuf/common";
 
 // 返回码枚举
 enum ReturnCode{
