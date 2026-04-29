@@ -15,3 +15,11 @@ message PublicKey{
   string type = 1;
   string public_key = 2;
 }
+
+enum TxStatus {
+  PENDING = 0;
+  CONFIRMING = 1;
+  SUCCESSED = 2;
+  FAILED = 3;
+  REORG_REVERTED = 4; // 链重组回滚
+}

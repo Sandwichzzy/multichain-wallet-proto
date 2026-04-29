@@ -9,14 +9,6 @@ enum TxType {
   WITHDRAW = 2;
 }
 
-enum TxStatus {
-  PENDING = 0;
-  CONFIRMING = 1;
-  SUCCESS = 2;
-  FAILED = 3;
-  REORG_REVERTED = 4; // 链重组回滚
-}
-
 /// 充值/提币交易通知信息
 message depositWithdrawInfo {
   string request_id = 1;  // 通知唯一ID,幂等性
