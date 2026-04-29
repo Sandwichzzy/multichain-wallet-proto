@@ -16,10 +16,14 @@ message PublicKey{
   string public_key = 2;
 }
 
+// 交易状态枚举
 enum TxStatus {
-  PENDING = 0;
-  CONFIRMING = 1;
-  SUCCESSED = 2;
-  FAILED = 3;
-  REORG_REVERTED = 4; // 链重组回滚
+  NotFound = 0; // 未找到
+  Pending = 1;  // 待处理
+  Confirming = 2;  // 确认中
+  Success = 3;  // 成功
+  Failed = 4;   // 失败
+  ReorgReverted = 5; // 链重组回滚
 }
+
+

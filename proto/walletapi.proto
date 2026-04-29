@@ -4,15 +4,6 @@ package proto;
 import "proto/common.proto";
 
 
-// 交易状态枚举
-enum TxStatus {
-  NotFound = 0; // 未找到
-  Pending = 1;  // 待处理
-  Failed = 2;   // 失败
-  Success = 3;  // 成功
-  Other = 4;    // 其他状态
-}
-
 // 通用响应结构
 message CommonResponse {
   ReturnCode code = 1; // 返回码
@@ -120,7 +111,7 @@ message ToAddress {
 message TransactionDetails {
   string tx_hash = 1;            // 交易哈希
   string fee = 2;                // 交易手续费（字符串格式）
-  uint32 status = 3;             // 交易状态（参考 TxStatus 枚举）
+  TxStatus status = 3;             // 交易状态（参考 TxStatus 枚举）
   uint32 txType = 4;             // 交易类型，如普通转账、合约调用,ERC20转账
   string contract_address = 5;   // 合约地址（如果是合约调用）
   repeated FromAddress from = 6; // 发送方列表,以太坊只有一个，btc会有多个vin vout
