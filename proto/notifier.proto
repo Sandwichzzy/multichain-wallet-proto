@@ -3,30 +3,49 @@ option go_package = "../protobuf/notifier";
 package proto;
 import "proto/common.proto";
 
-message depositWithdrawInfo {
-  uint64 block_number = 1;
-  string block_hash = 2;
-  string tx_hash = 3;
-  string from_address = 4;
-  string to_address = 5;
-  string amount = 6;
-  string fee = 7;
-  uint32 tx_type = 8;
-  uint32 status = 9;
-  uint64 confirms = 10;
+enum TxType {
+  UNKNOWN_TX = 0;
+  DEPOSIT = 1;
+  WITHDRAW = 2;
 }
 
+enum TxStatus {
+  PENDING = 0;
+  CONFIRMING = 1;
+  SUCCESS = 2;
+  FAILED = 3;
+  REORG_REVERTED = 4; // 链重组回滚
+}
+
+/// 充值/提币交易通知信息
+message depositWithdrawInfo {
+  string request_id = 1;  // 通知唯一ID,幂等性
+  uint64 block_number = 2;
+  string block_hash = 3;
+  string tx_hash = 4; 
+  string from_address = 5;
+  string to_address = 6;
+  string amount = 7;
+  string fee = 8;
+  TxType tx_type = 9;      // 交易类型
+  TxStatus status = 10;    // 交易状态
+  uint64 confirms = 11;
+}
+
+/// 充值/提币通知请求（支持批量）
 message depositWithdrawNotifyRequest {
   string consumer_token = 1;
   repeated depositWithdrawInfo dw_txn = 2;
 }
 
+/// 通知确认结果
 message RetDwNotifyInfo {
-  uint64 block_number = 1;
-  string block_hash = 2;
-  string tx_hash = 3;
+  uint64 block_number = 1; // 已成功处理的区块高度
+  string block_hash = 2;   // 已确认区块哈希
+  string tx_hash = 3;      // 已接收处理的交易哈希
 }
 
+/// 充值/提币通知响应
 message depositWithdrawNotifyResponse {
   ReturnCode code = 1;
   string msg = 2;
@@ -34,5 +53,6 @@ message depositWithdrawNotifyResponse {
 }
 
 service NotifierServices {
+  /// 用于钱包服务向业务系统推送链上交易事件。支持批量通知。
   rpc depositWithdrawNotify(depositWithdrawNotifyRequest) returns (depositWithdrawNotifyResponse) {}
 }
