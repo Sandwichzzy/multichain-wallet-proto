@@ -1,0 +1,38 @@
+syntax = "proto3";
+option go_package = "./protobuf/notifier";
+package proto;
+import "proto/common.proto";
+
+message depositWithdrawInfo {
+  uint64 block_number = 1;
+  string block_hash = 2;
+  string tx_hash = 3;
+  string from_address = 4;
+  string to_address = 5;
+  string amount = 6;
+  string fee = 7;
+  uint32 tx_type = 8;
+  uint32 status = 9;
+  uint64 confirms = 10;
+}
+
+message depositWithdrawNotifyRequest {
+  string consumer_token = 1;
+  repeated depositWithdrawInfo dw_txn = 2;
+}
+
+message RetDwNotifyInfo {
+  uint64 block_number = 1;
+  string block_hash = 2;
+  string tx_hash = 3;
+}
+
+message depositWithdrawNotifyResponse {
+  ReturnCode code = 1;
+  string msg = 2;
+  repeated RetDwNotifyInfo ret_dw_txn = 3;
+}
+
+service NotifierServices {
+  rpc depositWithdrawNotify(depositWithdrawNotifyRequest) returns (depositWithdrawNotifyResponse) {}
+}

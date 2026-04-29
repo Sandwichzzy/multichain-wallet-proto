@@ -1,0 +1,99 @@
+syntax = "proto3";
+option go_package = "./protobuf/exchangewallet";
+package proto;
+import "proto/common.proto";
+
+
+// 业务注册请求消息
+message BusinessRegisterRequest {
+  string consumer_token = 1; // 消费者令牌，用于身份认证
+  string request_id = 2;     // 请求唯一标识，用于追踪和去重
+  string notify_url = 3;     // 回调通知地址，用于异步通知业务结果
+}
+
+// 业务注册响应消息
+message BusinessRegisterResponse{
+  ReturnCode Code = 1; // 返回码，指示注册是否成功
+  string Msg = 2;      // 返回信息，描述结果详情
+}
+
+// 代币信息结构
+message Token{
+  uint32 decimals = 1;        // 代币小数位数
+  string address = 2;         // 代币合约地址
+  string token_name = 3;      // 代币名称
+  string collect_amount = 4;  // 归集阈值金额（字符串格式，避免精度丢失）
+  string cold_amount = 5;     // 冷钱包阈值金额（字符串格式）
+}
+
+// 设置代币地址请求消息
+message SetTokenAddressRequest{
+  string request_id = 1;            // 请求唯一标识
+  repeated Token token_list = 2;    // 待设置的代币列表，支持批量操作
+}
+
+// 设置代币地址响应消息
+message SetTokenAddressResponse {
+  ReturnCode code = 1; // 返回码
+  string msg = 2;      // 返回信息
+}
+
+
+// 导出地址请求消息
+message ExportAddressesRequest{
+  string consumer_token = 1;            // 消费者令牌
+  string request_id = 2;                // 请求唯一标识
+  repeated PublicKey public_keys = 3;   // 需要导出地址的公钥列表,可以不传，签名机地址公钥一起返回
+}
+
+// 地址信息结构
+message Address{
+  string type = 1;    // 地址类型（与公钥类型对应）
+  string address = 2; // 区块链地址
+}
+
+// 导出地址响应消息
+message ExportAddressesResponse {
+  ReturnCode Code = 1;               // 返回码
+  string msg = 2;                    // 返回信息
+  repeated Address addresses = 3;    // 导出的地址列表
+}
+
+// 提现交易详情
+message WithdrawTxn {
+  string request_id = 1;         // 提现请求唯一标识
+  string chain_id = 2;           // 区块链网络ID（如以太坊主网为"1"）
+  string from = 3;               // 发送方地址
+  string to = 4;                 // 接收方地址
+  string value = 5;              // 转账金额（字符串格式，避免精度丢失）
+  string contract_address = 6;   // 代币合约地址（如果是原生币则留空）
+  string token_id = 7;           // 代币ID（用于NFT等场景）
+  string token_meta = 8;         // 代币元数据（可选，如NFT的URI）
+}
+
+// 提现交易请求消息，支持批量提现
+message withdrawTransactionRequest {
+  string consumer_token = 1;               // 消费者令牌
+  repeated WithdrawTxn withdraw_txn = 2;   // 提现交易列表
+}
+
+// 提现交易响应消息
+message withdrawTransactionResponse {
+  ReturnCode code = 1; // 返回码
+  string msg = 2;      // 返回信息
+}
+
+// 业务中间件服务定义，提供钱包相关的RPC接口
+service BusinessMiddleWireServices {
+  // 业务注册接口：业务方首次调用，注册自身信息并获取授权
+  rpc businessRegister(BusinessRegisterRequest) returns (BusinessRegisterResponse) {}
+
+  // 设置代币地址接口：配置需要监控或管理的代币合约地址及阈值
+  rpc setTokenAddress(SetTokenAddressRequest) returns (SetTokenAddressResponse) {}
+
+  // 根据公钥导出地址接口：给定一组公钥，计算对应的区块链地址
+  rpc exportAddressesByPublicKeys(ExportAddressesRequest) returns (ExportAddressesResponse) {}
+
+  // 提现交易接口：发起一笔或多笔提现交易
+  rpc withdrawTransaction(withdrawTransactionRequest) returns(withdrawTransactionResponse) {}
+}

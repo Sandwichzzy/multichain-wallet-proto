@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option go_package = "./protobuf/riskcontroller";
+package proto;
+import "proto/common.proto";
+
+message AmlAddress {
+  string address = 1;
+}
+
+message RetAmlAddress {
+  string address = 1;
+  string address_type = 2;
+}
+
+message CheckAmlAddressRequest {
+  string consumer_token = 1;
+  repeated AmlAddress aml_address = 2;
+}
+
+message CheckAmlAddressResponse {
+  ReturnCode code = 1;
+  string msg = 2;
+  repeated RetAmlAddress ret_aml_address = 3;
+}
+
+message ChainTransaction {
+  string tx_hash = 1;
+}
+
+message RetChainTransaction {
+  string from_address = 1;
+  string to_address = 2;
+  string amount = 3;
+  string fee = 4;
+  uint64 confirms = 5;
+}
+
+message CheckChainTransactionsRequest {
+  string consumer_token = 1;
+  repeated ChainTransaction chain_txn =2;
+}
+
+message CheckChainTransactionsResponse {
+  ReturnCode code = 1;
+  string msg = 2;
+  repeated RetChainTransaction ret_chain_txn = 3;
+}
+
+message UserTransaction {
+  string request_id = 1;
+  string from_address = 2;
+  string to_address = 3;
+  string amount = 4;
+}
+
+message checkUserTransactionRequest {
+  string consumer_token = 1;
+  repeated UserTransaction user_txn = 2;
+}
+
+message RetUserTransaction {
+  string tx_body_hash = 1;
+  string tx_body_risk_hash = 2;
+}
+
+message checkUserTransactionResponse {
+  ReturnCode code = 1;
+  string msg = 2;
+  repeated RetUserTransaction ret_user_txn = 3;
+}
+
+service RiskControllerServices {
+  rpc checkAmlAddress(CheckAmlAddressRequest) returns (CheckAmlAddressResponse) {}
+  rpc checkChainTransactions(CheckChainTransactionsRequest) returns (CheckChainTransactionsResponse) {}
+  rpc checkUserTransaction(checkUserTransactionRequest) returns (checkUserTransactionResponse) {}
+}

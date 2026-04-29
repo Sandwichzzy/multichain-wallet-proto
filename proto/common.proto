@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./protobuf/common";
+
+// 返回码枚举
+enum ReturnCode{
+  SUCCESS = 0;
+  ERROR = 1;
+}
+
+// type 字段支持：eoa（外部账户）、hot（热钱包）、cold（冷钱包）
+message PublicKey{
+  string type = 1;
+  string public_key = 2;
+}

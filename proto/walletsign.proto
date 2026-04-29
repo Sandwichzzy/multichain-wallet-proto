@@ -1,0 +1,158 @@
+syntax = "proto3";
+package proto;
+option go_package = "./protobuf/walletsign";
+import "proto/common.proto";
+
+// 查询链签名方法请求
+message ChainSignMethodRequest {
+  string consumer_token = 1;  // 调用方身份令牌，用于鉴权和限流
+  string chain_id = 2;      // 链名称，例如 "ethereum"、"bitcoin"
+  string network = 3;         // 网络类型，例如 "mainnet"、"testnet"
+  string asset_type = 4;      // 资产类型，例如 "coin" 或具体代币符号
+}
+
+// 查询链签名方法响应
+message ChainSignMethodResponse {
+  ReturnCode code = 1;        // 返回状态码
+  string message = 2;         // 附加信息，成功时可为空，失败时携带错误描述
+  string sign_method = 3;     // 签名方法标识，例如 "ecdsa"、"ed25519"
+}
+
+// 查询链数据结构定义请求
+message ChainSchemaRequest {
+  string consumer_token = 1;  // 调用方身份令牌
+  string chain_id = 2;      // 链名称
+  string network = 3;         // 网络类型
+  string asset_type = 4;      // 资产类型
+}
+
+// 查询链数据结构定义响应
+message ChainSchemaResponse {
+  ReturnCode code = 1;        // 返回状态码
+  string message = 2;         // 附加信息
+  string schema = 3;          // 链的数据结构定义（如交易格式、地址编码规则等），通常为 JSON 字符串
+}
+
+// 导出的公钥信息
+message ExportPublicKey {
+  string public_key = 1;          // 未压缩格式公钥（十六进制字符串）
+  string compress_public_key = 2; // 压缩格式公钥（十六进制字符串）
+}
+
+// 批量生成密钥对并导出公钥请求
+message CreateKeyPairAndExportPublicKeyRequest {
+  string consumer_token = 1;  // 调用方身份令牌
+  string chain_id = 2;      // 链名称
+  string network = 3;         // 网络类型
+  uint64 key_num  = 4;        // 需要生成的密钥对数量
+}
+
+// 批量生成密钥对并导出公钥响应
+message CreateKeyPairAndExportPublicKeyResponse{
+  ReturnCode code = 1;                    // 返回状态码
+  string message = 2;                     // 附加信息
+  repeated ExportPublicKey public_key_list = 3; // 生成的公钥列表，顺序与内部生成顺序一致
+}
+
+// 包含地址的公钥信息
+message ExportPublicKeyWithAddress {
+  string public_key = 1;          // 未压缩格式公钥
+  string compress_public_key = 2; // 压缩格式公钥
+  string address = 3;             // 根据指定格式生成的链上地址
+}
+
+// 批量生成密钥对并返回公钥及地址请求
+message CreateKeyPairsWithAddressesRequest {
+  string consumer_token = 1;  // 调用方身份令牌
+  string chain_id = 2;      // 链名称
+  string network = 3;         // 网络类型
+  string address_format = 4;  // 地址格式要求，例如 "p2pkh"、"bech32"、"checksum"
+  uint64 key_num  = 5;        // 需要生成的密钥对数量
+}
+
+// 批量生成密钥对并返回公钥及地址响应
+message CreateKeyPairsWithAddressesResponse{
+  ReturnCode code = 1;                                // 返回状态码
+  string message = 2;                                 // 附加信息
+  repeated ExportPublicKeyWithAddress public_key_addresses = 3; // 公钥与地址列表
+}
+
+// 单条待签名消息（基于消息哈希）
+message SignTransactionMessage {
+  string public_key = 1;    // 签名所使用的公钥（用于定位对应私钥）
+  string message_hash = 2;  // 待签名的消息哈希（32字节十六进制字符串）
+}
+
+// 批量签名消息请求
+message SignTransactionsMessageRequest {
+  string consumer_token = 1;                      // 调用方身份令牌
+  string chain_id = 2;                          // 链名称
+  string network = 3;                             // 网络类型
+  repeated SignTransactionMessage sign_txn_msg = 4; // 待签名消息列表
+}
+
+// 单条消息签名结果
+message MsgWithSignature {
+  string message_hash = 1;  // 原始消息哈希
+  string signature = 2;     // 签名结果（十六进制字符串）
+  bool is_success = 3;      // 该条签名是否成功
+}
+
+// 批量签名消息响应
+message SignTransactionsMessageResponse {
+  ReturnCode Code = 1;                         // 返回状态码（整体请求级）
+  string message = 2;                          // 附加信息
+  string signature = 3;                        // 全局签名（根据业务定义，可能为聚合签名或空）
+  repeated MsgWithSignature msg_with_signature = 4; // 每一条消息对应的签名详情
+}
+
+// 待构建并签名的原始交易信息
+message TransactionMessage {
+  string public_key = 1;      // 用于签名的公钥（定位私钥）
+  string wallet_key_hash = 2; // 钱包密钥哈希（部分链用于地址验证）
+  string risk_key_hash = 3;   // 风控相关密钥哈希（可选）
+  string tx_base64_body = 4;  // Base64 编码的未签名交易体
+}
+
+// 签名完成后的交易数据
+message TransactionWithSign {
+  string tx_message_hash = 1; // 交易消息哈希（待签名消息的哈希,交易体构造完成、签名之前）
+  string tx_hash = 2;         // 完整交易哈希， 计算最终交易哈希链上交易唯一标识符 (Transaction ID)（对 signed_tx 进行哈希计算后，用于在链上查询交易状态）
+  string signed_tx = 3;       // 已签名的完整交易原始数据（通常为十六进制或 Base64 字符串,签名完成、计算 tx_hash 之前，是最终要广播到区块链网络的数据）
+}
+
+// 批量构建并签名交易请求
+message BuildAndSignTransactionsRequest {
+  string consumer_token = 1;            // 调用方身份令牌
+  string chain_id = 2;                // 链名称
+  string network = 3;                   // 网络类型
+  repeated TransactionMessage tx_msg = 4; // 待处理的交易列表
+}
+
+// 批量构建并签名交易响应
+message BuildAndSignTransactionsResponse {
+  ReturnCode code = 1;                      // 返回状态码
+  string message = 2;                       // 附加信息
+  repeated TransactionWithSign tx_with_sign = 3; // 签名后的交易数据列表
+}
+
+// 钱包签名服务定义
+service WalletSignService {
+  // 获取指定链的签名方法标识
+  rpc getChainSignMethod(ChainSignMethodRequest) returns(ChainSignMethodResponse){}
+
+  // 获取指定链的数据结构定义
+  rpc getChainSchema(ChainSchemaRequest) returns(ChainSchemaResponse) {}
+
+  // 批量生成密钥对，仅导出公钥列表（不包含地址）
+  rpc createKeyPairsExportPublicKeyList(CreateKeyPairAndExportPublicKeyRequest) returns (CreateKeyPairAndExportPublicKeyResponse) {}
+
+  // 批量生成密钥对，同时返回公钥与对应的链上地址
+  rpc createKeyPairsWithAddresses(CreateKeyPairsWithAddressesRequest) returns (CreateKeyPairsWithAddressesResponse) {}
+
+  // 对消息哈希进行批量签名（传入公钥定位私钥）
+  rpc signTransactionsMessage(SignTransactionsMessageRequest) returns (SignTransactionsMessageResponse) {}
+
+  // 一站式交易构建与签名（传入未签名交易体，返回已签名交易）
+  rpc buildAndSignTransactions(BuildAndSignTransactionsRequest) returns (BuildAndSignTransactionsResponse);
+}
