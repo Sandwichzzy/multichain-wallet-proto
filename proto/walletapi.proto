@@ -1,7 +1,7 @@
 syntax = "proto3";
 option go_package = "../protobuf/walletapi";
 package proto;
-import "proto/common.proto";
+import "common.proto";
 
 
 // 通用响应结构

@@ -1,7 +1,7 @@
 syntax = "proto3";
 option go_package = "../protobuf/exchangewallet";
 package proto;
-import "proto/common.proto";
+import "common.proto";
 
 
 // 业务注册请求消息

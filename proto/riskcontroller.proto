@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option go_package = "../protobuf/riskcontroller";
 package proto;
-import "proto/common.proto";
+import "common.proto";
 
 /// 待检测的链上地址
 message AmlAddress {

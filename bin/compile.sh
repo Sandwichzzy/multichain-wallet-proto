@@ -28,7 +28,7 @@ else
     export GOBIN=$GO_PATH/bin
     export PATH=$PATH:$GO_PATH/bin
 
-    protoc -I ./ --go_out=./ --go-grpc_out=require_unimplemented_servers=false:. proto/*.proto
+    protoc -I ./proto --go_out=./ --go-grpc_out=require_unimplemented_servers=false:. proto/*.proto
 
     exit_if $?
     echo Done
