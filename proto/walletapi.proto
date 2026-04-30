@@ -91,6 +91,8 @@ message LastestBlockResponse {
   string msg = 2;        // 返回信息
   uint64 height = 3;     // 最新区块高度
   string hash = 4;       // 最新区块哈希
+  string parent_hash=5;  // 最新区块的parent区块hash,回滚处理
+  uint64 timestamp=6;    // 最新区块产生时间，回滚判断处理
 }
 
 // 交易发送方信息
