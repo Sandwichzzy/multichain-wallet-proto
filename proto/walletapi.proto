@@ -135,7 +135,9 @@ message BlockResponse{
   string msg = 2;                           // 返回信息
   string height = 3;                        // 区块高度
   string hash = 4;                          // 区块哈希
-  repeated TransactionDetails transactions = 5; // 区块中的交易列表
+  string parent_hash=5;  // 最新区块的parent区块hash,回滚处理
+  uint64 timestamp=6;    // 最新区块产生时间，回滚判断处理
+  repeated TransactionDetails transactions = 7; // 区块中的交易列表
 }
 
 // 根据交易哈希查询交易请求
