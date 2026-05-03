@@ -77,10 +77,21 @@ message CreateKeyPairsWithAddressesResponse{
   repeated ExportPublicKeyWithAddress public_key_addresses = 3; // 公钥与地址列表
 }
 
+message TransactionBody {
+  string request_id = 1;
+  string from_address = 2;
+  string to_address = 3;
+  string amount = 4;
+  string token_address = 5;
+}
+
 // 单条待签名消息（基于消息哈希）
 message SignTransactionMessage {
   string public_key = 1;    // 签名所使用的公钥（用于定位对应私钥）
   string message_hash = 2;  // 待签名的消息哈希（32字节十六进制字符串）
+  string risk_key_hash = 3;
+  string wallet_key_hash = 4;
+  TransactionBody tx_body = 5;
 }
 
 // 批量签名消息请求
