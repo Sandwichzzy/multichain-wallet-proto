@@ -9,22 +9,10 @@ message AmlAddress {
   string address = 1;
 }
 
-// 地址风险类型 示例：
-// NORMAL        正常地址
-// BLACKLIST     黑名单地址
-// SANCTION      制裁地址
-// HIGH_RISK     高风险地址
-enum AddressRiskType {
-  NORMAL = 0;
-  BLACKLIST = 1;
-  SANCTION = 2;
-  HIGH_RISK = 3;
-}
-
 /// AML地址检测结果
 message RetAmlAddress {
   string address = 1;   // 输入地址
-  AddressRiskType address_type = 2;
+  string address_type = 2; //黑 灰 白 地址
 }
 
 /// AML地址检测请求

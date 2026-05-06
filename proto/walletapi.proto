@@ -39,6 +39,7 @@ message SupportChainResponse {
 message Addresses {
   string address = 1; // 区块链地址字符串
   string public_key =2;
+  string type = 3;
 }
 
 // 转换地址请求（将公钥转换为地址）
@@ -60,7 +61,8 @@ message ConvertAddressesResponse{
 // 地址有效性验证结果
 message AddressesValid {
   string address = 1; // 地址字符串
-  bool valid = 2;     // 是否有效
+  string type = 2;    // 地址类型
+  bool valid = 3;     // 是否有效
 }
 
 // 验证地址有效性请求

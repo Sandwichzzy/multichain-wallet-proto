@@ -28,8 +28,9 @@ message Token{
 
 // 设置代币地址请求消息
 message SetTokenAddressRequest{
-  string request_id = 1;            // 请求唯一标识
-  repeated Token token_list = 2;    // 待设置的代币列表，支持批量操作
+  string consumer_token = 1;        // 消费者令牌，用于身份认证
+  string request_id = 2;            // 请求唯一标识
+  repeated Token token_list = 3;    // 待设置的代币列表，支持批量操作
 }
 
 // 设置代币地址响应消息
