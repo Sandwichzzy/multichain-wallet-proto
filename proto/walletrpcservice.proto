@@ -7,7 +7,7 @@ import "common.proto";
 // 业务注册请求消息
 message BusinessRegisterRequest {
   string consumer_token = 1; // 消费者令牌，用于身份认证
-  string request_id = 2;     // 请求唯一标识，用于追踪和去重
+  string business_id = 2;     // 多租户业务 ID
   string notify_url = 3;     // 回调通知地址，用于异步通知业务结果
 }
 
@@ -28,9 +28,9 @@ message Token{
 
 // 设置代币地址请求消息
 message SetTokenAddressRequest{
-  string consumer_token = 1;        // 消费者令牌，用于身份认证
-  string request_id = 2;            // 请求唯一标识
-  repeated Token token_list = 3;    // 待设置的代币列表，支持批量操作
+  string consumer_token = 1;         // 消费者令牌，用于身份认证
+  string business_id = 2;            // Tokens分表参数使用，实际作为多租户业务 ID 使用
+  repeated Token token_list = 3;     // 待设置的代币列表，支持批量操作
 }
 
 // 设置代币地址响应消息
@@ -43,7 +43,7 @@ message SetTokenAddressResponse {
 // 导出地址请求消息
 message ExportAddressesRequest{
   string consumer_token = 1;            // 消费者令牌
-  string request_id = 2;                // 请求唯一标识
+  string business_id = 2;                // 作为地址表、余额表的业务分表名使用，实际作为多租户业务 ID 使用
   repeated PublicKey public_keys = 3;   // 需要导出地址的公钥列表,可以不传，签名机地址公钥一起返回
 }
 
@@ -62,7 +62,7 @@ message ExportAddressesResponse {
 
 // 提现交易详情
 message WithdrawTxn {
-  string request_id = 1;         // 提现请求唯一标识
+  string request_id = 1;         // 提现交易请求唯一标识
   string chain_id = 2;           // 区块链网络ID（如以太坊主网为"1"）
   string from = 3;               // 发送方地址
   string to = 4;                 // 接收方地址

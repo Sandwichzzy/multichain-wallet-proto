@@ -57,7 +57,7 @@ message CheckChainTransactionsResponse {
 
 /// 业务方传过来待风控检测交易
 message UserTransaction {
-  string request_id = 1; // 业务请求唯一ID
+  string request_id = 1; 
   string from_address = 2;
   string to_address = 3;
   string amount = 4;
@@ -72,7 +72,7 @@ message CheckUserTransactionRequest {
 
 /// 业务方交易风控结果
 message RetUserTransaction {
-  string request_id = 1;      // 业务请求唯一ID
+  string request_id = 1;      // 交易唯一ID
   string tx_body_hash = 2;   // 原交易体摘要哈希 用于交易原文完整性校验
   string tx_body_risk_hash = 3; // 风控规则处理后风险摘要哈希 用于风控签名、规则指纹校验
 }

@@ -11,7 +11,7 @@ enum TxType {
 
 /// 充值/提币交易通知信息
 message depositWithdrawInfo {
-  string request_id = 1;  // 通知唯一ID,幂等性
+  string notify_id = 1;  // 通知唯一 ID / 幂等键，用于通知去重或幂等控制，不应与业务 ID 或交易流水号混用
   uint64 block_number = 2;
   string block_hash = 3;
   string tx_hash = 4; 
