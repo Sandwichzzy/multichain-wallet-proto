@@ -328,8 +328,10 @@ service WalletApiGateWayService {
   // 构建与发送交易
   rpc sendTransaction(SendTransactionsRequest) returns (SendTransactionsResponse) {}               // 广播已签名交易
   rpc buildTransactionSchema(TransactionSchemaRequest)returns(TransactionSchemaResponse){}        // 获取交易构造Schema
-  rpc buildUnSignTransaction(UnSignTransactionRequest) returns(UnSignTransactionResponse){}       // 生成“要签什么”，待签名的交易哈希或消息
-  rpc buildSignedTransaction(SignedTransactionRequest) returns(SignedTransactionResponse){}       // 把签名“塞回交易”，组装成可广播交易
+  // 生成“要签什么”，待签名的交易哈希或消息
+  rpc buildUnSignTransaction(UnSignTransactionRequest) returns(UnSignTransactionResponse){}
+  // 把签名“塞回交易”，组装成可广播交易
+  rpc buildSignedTransaction(SignedTransactionRequest) returns(SignedTransactionResponse){}
 
   // Web3 钱包扩展功能
   rpc getAddressApproveList(AddressApproveListRequest) returns(AddressApproveListResponse){} // 获取地址授权合约列表
