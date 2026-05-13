@@ -161,9 +161,9 @@ service WalletSignService {
   // 批量生成密钥对，同时返回公钥与对应的链上地址
   rpc createKeyPairsWithAddresses(CreateKeyPairsWithAddressesRequest) returns (CreateKeyPairsWithAddressesResponse) {}
 
-  // 对消息哈希进行批量签名（传入公钥定位私钥）
+  // 对消息哈希进行批量签名（传入公钥定位私钥）只负责“签”,不组装交易,会校验wallet_key_hash、risk_key_hash
   rpc signTransactionsMessage(SignTransactionsMessageRequest) returns (SignTransactionsMessageResponse) {}
 
-  // 一站式交易构建与签名（传入未签名交易体，返回已签名交易）
+  // 一站式交易构建与签名（服务端自己完成“构建未签名交易 -> 算待签名消息 -> 查私钥签名 -> 组装 signed_tx”）
   rpc buildAndSignTransactions(BuildAndSignTransactionsRequest) returns (BuildAndSignTransactionsResponse);
 }
