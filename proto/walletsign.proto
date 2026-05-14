@@ -15,7 +15,7 @@ message ChainSignMethodRequest {
 message ChainSignMethodResponse {
   ReturnCode code = 1;        // 返回状态码
   string message = 2;         // 附加信息，成功时可为空，失败时携带错误描述
-  string sign_method = 3;     // 签名方法标识，例如 "ecdsa"、"ed25519"
+  string sign_method = 3;     // 默认签名方法标识，例如 "ecdsa"、"ed25519"、"schnnor"
 }
 
 // 查询链数据结构定义请求
@@ -42,9 +42,10 @@ message ExportPublicKey {
 // 批量生成密钥对并导出公钥请求
 message CreateKeyPairAndExportPublicKeyRequest {
   string consumer_token = 1;  // 调用方身份令牌
-  string chain_id = 2;      // 链名称
+  string chain_id = 2;        // 链名称
   string network = 3;         // 网络类型
   uint64 key_num  = 4;        // 需要生成的密钥对数量
+  string sign_method = 5;     // 可选签名算法；Bitcoin 支持 "ecdsabitcoin"、"schnorr"，其他链为空时使用默认算法
 }
 
 // 批量生成密钥对并导出公钥响应
@@ -64,10 +65,11 @@ message ExportPublicKeyWithAddress {
 // 批量生成密钥对并返回公钥及地址请求
 message CreateKeyPairsWithAddressesRequest {
   string consumer_token = 1;  // 调用方身份令牌
-  string chain_id = 2;      // 链名称
+  string chain_id = 2;        // 链名称
   string network = 3;         // 网络类型
   string address_format = 4;  // 地址格式要求，例如 "p2pkh"、"bech32"、"checksum"
   uint64 key_num  = 5;        // 需要生成的密钥对数量
+  string sign_method = 6;     // 可选签名算法；Bitcoin 支持 "ecdsabitcoin"、"schnorr"，其他链为空时使用默认算法
 }
 
 // 批量生成密钥对并返回公钥及地址响应
@@ -92,6 +94,7 @@ message SignTransactionMessage {
   string risk_key_hash = 3;
   string wallet_key_hash = 4;
   TransactionBody tx_body = 5;
+  string sign_method = 6;   // 可选签名算法；Bitcoin 支持 "ecdsabitcoin"、"schnorr"，其他链为空时使用默认算法
 }
 
 // 批量签名消息请求
