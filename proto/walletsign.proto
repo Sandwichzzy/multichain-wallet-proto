@@ -11,11 +11,13 @@ message ChainSignMethodRequest {
   string asset_type = 4;      // 资产类型，例如 "coin" 或具体代币符号
 }
 
+
 // 查询链签名方法响应
 message ChainSignMethodResponse {
   ReturnCode code = 1;        // 返回状态码
   string message = 2;         // 附加信息，成功时可为空，失败时携带错误描述
-  string sign_method = 3;     // 默认签名方法标识，例如 "ecdsa"、"ed25519"、"schnnor"
+  string sign_method = 3;                  // 默认方法，保留兼容
+  repeated string supported_sign_methods = 4; // 支持的签名方法列表 ecdsa eddsa schnoor
 }
 
 // 查询链数据结构定义请求
