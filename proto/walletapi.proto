@@ -242,7 +242,8 @@ message Base64Transaction  {
 
 // 未签名交易的消息哈希
 message UnsignedTransactionMessageHash {
-  string unsigned_tx = 1; // 待签名的交易哈希或消息
+  string unsigned_tx = 1; // 链特定的未签名交易包/签名前材料，供 buildSignedTransaction 回填签名
+  string message_hash = 2; // 真正送给 walletsign 的待签名消息摘要（单条十六进制字符串；Bitcoin 暂不使用）
 }
 
 // 构建未签名交易请求（批量）
