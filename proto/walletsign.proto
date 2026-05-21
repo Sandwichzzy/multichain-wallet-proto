@@ -130,28 +130,6 @@ message TransactionMessage {
   string tx_base64_body = 4;  // Base64 编码的未签名交易体
 }
 
-// 签名完成后的交易数据
-message TransactionWithSign {
-  string tx_message_hash = 1; // 交易消息哈希（待签名消息的哈希,交易体构造完成、签名之前）
-  string tx_hash = 2;         // 完整交易哈希， 计算最终交易哈希链上交易唯一标识符 (Transaction ID)（对 signed_tx 进行哈希计算后，用于在链上查询交易状态）
-  string signed_tx = 3;       // 已签名的完整交易原始数据（通常为十六进制或 Base64 字符串,签名完成、计算 tx_hash 之前，是最终要广播到区块链网络的数据）
-}
-
-// 批量构建并签名交易请求
-message BuildAndSignTransactionsRequest {
-  string consumer_token = 1;            // 调用方身份令牌
-  string chain_id = 2;                // 链名称
-  string network = 3;                   // 网络类型
-  repeated TransactionMessage tx_msg = 4; // 待处理的交易列表
-}
-
-// 批量构建并签名交易响应
-message BuildAndSignTransactionsResponse {
-  ReturnCode code = 1;                      // 返回状态码
-  string message = 2;                       // 附加信息
-  repeated TransactionWithSign tx_with_sign = 3; // 签名后的交易数据列表
-}
-
 // 钱包签名服务定义
 service WalletSignService {
   // 获取指定链的签名方法标识
@@ -169,6 +147,4 @@ service WalletSignService {
   // 对消息哈希进行批量签名（传入公钥定位私钥）只负责“签”,不组装交易,会校验wallet_key_hash、risk_key_hash
   rpc signTransactionsMessage(SignTransactionsMessageRequest) returns (SignTransactionsMessageResponse) {}
 
-  // 已废弃：一站式交易构建与签名（服务端自己完成“构建未签名交易 -> 算待签名消息 -> 查私钥签名 -> 组装 signed_tx”）
-  rpc buildAndSignTransactions(BuildAndSignTransactionsRequest) returns (BuildAndSignTransactionsResponse);
 }
