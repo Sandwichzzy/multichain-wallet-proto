@@ -20,20 +20,6 @@ message ChainSignMethodResponse {
   repeated string supported_sign_methods = 4; // 支持的签名方法列表 ecdsa eddsa schnoor
 }
 
-// 查询链数据结构定义请求
-message ChainSchemaRequest {
-  string consumer_token = 1;  // 调用方身份令牌
-  string chain_id = 2;      // 链名称
-  string network = 3;         // 网络类型
-  string asset_type = 4;      // 资产类型
-}
-
-// 查询链数据结构定义响应
-message ChainSchemaResponse {
-  ReturnCode code = 1;        // 返回状态码
-  string message = 2;         // 附加信息
-  string schema = 3;          // 链的数据结构定义（如交易格式、地址编码规则等），通常为 JSON 字符串
-}
 
 // 导出的公钥信息
 message ExportPublicKey {
@@ -134,9 +120,6 @@ message TransactionMessage {
 service WalletSignService {
   // 获取指定链的签名方法标识
   rpc getChainSignMethod(ChainSignMethodRequest) returns(ChainSignMethodResponse){}
-
-  // 获取指定链的数据结构定义
-  rpc getChainSchema(ChainSchemaRequest) returns(ChainSchemaResponse) {}
 
   // 批量生成密钥对，仅导出公钥列表（不包含地址）
   rpc createKeyPairsExportPublicKeyList(CreateKeyPairAndExportPublicKeyRequest) returns (CreateKeyPairAndExportPublicKeyResponse) {}
