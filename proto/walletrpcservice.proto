@@ -44,7 +44,7 @@ message SetTokenAddressResponse {
 message ExportAddressesRequest{
   string consumer_token = 1;            // 消费者令牌
   string business_id = 2;                // 作为地址表、余额表的业务分表名使用，实际作为多租户业务 ID 使用
-  repeated PublicKey public_keys = 3;   // 需要导出地址的公钥列表,可以不传，签名机地址公钥一起返回
+  repeated PublicKey public_keys = 3;   //需要导出地址的公钥列表；必须显式传入，空列表不再隐式批量生成地址
 }
 
 // 地址信息结构
@@ -76,6 +76,7 @@ message WithdrawTxn {
 message withdrawTransactionRequest {
   string consumer_token = 1;               // 消费者令牌
   repeated WithdrawTxn withdraw_txn = 2;   // 提现交易列表
+  string business_id = 3;                  // 业务租户 ID，用于定位 withdraws_<business> 分表
 }
 
 // 提现交易响应消息
@@ -89,12 +90,12 @@ service BusinessMiddleWireServices {
   // 业务注册接口：业务方首次调用，注册自身信息并获取授权
   rpc businessRegister(BusinessRegisterRequest) returns (BusinessRegisterResponse) {}
 
-  // 设置代币地址接口：配置需要监控或管理的代币合约地址及阈值
+  // 设置代币地址接口：为业务配置代币白名单及归集/冷钱包阈值。
   rpc setTokenAddress(SetTokenAddressRequest) returns (SetTokenAddressResponse) {}
 
-  // 根据公钥导出地址接口：给定一组公钥，计算对应的区块链地址
+  // 根据公钥导出地址接口：给定一组公钥，计算对应的区块链地址，并把业务控制的钱包地址注册进系统
   rpc exportAddressesByPublicKeys(ExportAddressesRequest) returns (ExportAddressesResponse) {}
 
-  // 提现交易接口：发起一笔或多笔提现交易
+  // 提现交易接口：业务方把提现申请提交给钱包中台，后续由 wallet提现部分 异步完成风控、签名、组装和广播
   rpc withdrawTransaction(withdrawTransactionRequest) returns(withdrawTransactionResponse) {}
 }
